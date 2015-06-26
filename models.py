@@ -2,14 +2,8 @@ class User:
     def __init__(self, data):
         self.id = data["id"]
         self.first_name = data["first_name"]
-        if "last_name" in data:
-            self.last_name = data["last_name"]
-        else:
-            self.last_name = ""
-        if "username" in data:
-            self.username = data["username"]
-        else:
-            slef.username = ""
+        self.last_name = data.get("last_name","")
+        self.username = data.get("username","")
 
 class GroupChat:
     def __init__(self, data):
@@ -21,14 +15,21 @@ class Message:
         self.message_id = data["message_id"]
         self.from_user = User(data["from"])
         self.date = data["date"]
+
+        # Finding if we have a GroupChat or an User
         if "title" in data["chat"]:
             self.chat = GroupChat(data["chat"])
         elif "first_name" in data["chat"]:
             self.chat = User(data["chat"])
+
+        # Forward data
+        # Idea : as date is there if there is from, move date into from's condition?
         if "forward_from" in data:
             self.forward_from = User(data["forward_from"])
         if "forward_date" in data:
             self.forward_date = data["forward_date"]
+
+        #Message types
         if "reply_to_message" in data:
             self.reply_to_message = Message(data["reply_to_message"])
         if "text" in data:
@@ -49,6 +50,8 @@ class Message:
             self.contact = Contact(data["contact"])
         if "location" in data:
             self.location = Location(data["location"])
+
+        # What happened in the server
         if "new_chat_participant" in data:
             self.new_chat_participant = User(data["new_chat_participant"])
         if "left_chat_participant" in data:
@@ -74,37 +77,22 @@ class PhotoSize:
         self.file_id = data["file_id"]
         self.width = data["width"]
         self.height = data["height"]
-        if "file_size" in data:
-            self.file_size = data["file_size"]
-        else:
-            self.file_size = -1
+        self.file_size = data.get("file_size", -1)
 
 class Audio:
     def __init__(self, data):
         self.file_id = data["file_id"]
         self.duration = data["duration"]
         self.mime_type = data["mime_type"]
-        if "file_size" in data:
-            self.file_size = data["file_size"]
-        else:
-            self.file_size = -1
+        self.file_size = data.get("file_size", -1)
 
 class Document:
     def __init__(self, data):
-       self.file_id = data["file_id"]
-       self.thumb = PhotoSize(data["thumb"])
-       if "file_name" in data:
-           self.file_name = data["file_name"]
-       else:
-           self.file_name = ""
-       if "mime_type" in data:
-           self.mime_type = data["mime_type"]
-       else:
-           self.mime_type = ""
-       if "file_size" in data:
-           self.file_size = data["file_size"]
-       else:
-           self.file_size = -1
+        self.file_id = data["file_id"]
+        self.thumb = PhotoSize(data["thumb"])
+        self.file_name = data.get("file_name", "")
+        self.mime_type = data.get("mime_type", "")
+        self.file_size = data.get("file_size", -1)
 
 class Sticker:
     def __init__(self, data):
@@ -112,10 +100,7 @@ class Sticker:
         self.width = data["width"]
         self.height = data["height"]
         self.thumb = PhotoSize(data["thumb"])
-        if "file_size" in data:
-            self.file_size = data["file_size"]
-        else:
-            self.file_size = -1
+        self.file_size = data.get("file_size", -1)
 
 class Video:
     def __init__(self, data):
@@ -124,31 +109,16 @@ class Video:
         self.height = data["height"]
         self.duration = data["duration"]
         self.thumb = PhotoSize(data["thumb"])
-        if "mime_type" in data:
-           self.mime_type = data["mime_type"]
-        else:
-           self.mime_type = ""
-        if "file_size" in data:
-           self.file_size = data["file_size"]
-        else:
-           self.file_size = -1
-        if "caption" in data:
-           self.caption = data["caption"]
-        else:
-           self.caption = ""
+        self.mime_type = data.get("mime_type", "")
+        self.file_size = data.get("file_size", -1)
+        self.caption = data.get("caption", "")
 
 class Contact:
     def __init__(self, data):
         self.phone_number = data["phone_number"]
         self.first_name = data["first_name"]
-        if "last_name" in data:
-           self.last_name = data["last_name"]
-        else:
-           self.last_name = ""
-        if "user_id" in data:
-           self.user_id = data["user_id"]
-        else:
-           self.user_id = ""
+        self.last_name = data.get("last_name", "")
+        self.user_id = data.get("user_id", "")
 
 class Location:
     def __init__(self, data):
@@ -159,40 +129,22 @@ class UserProfilePhotos:
     def __init__(self, data):
         self.total_count = data["total_count"]
         self.photos = []
-        for slice in data["photos"]:
-            line = []
-            for photo in slice:
-                line.append(PhotoSize(photo))
-            self.photos.append(line)
+        for row in data["photos"]:
+            self.photos.append(list(row))
 
 # Todo? Keyboard superclass for inheritance
 
 class ReplyKeybaordMarkup:
     def __init__(self, data):
         self.keyboard = []
-        for slice in data["keyboard"]:
-            line = []
-            for key in slice:
-                line.append(key)
-            self.keyboard.append(line)
-        if "resize_keyboard" in data:
-            self.resize_keyboard = data["resize_keybaord"]
-        else:
-            self.resize_keybaord = False
-        if "one_time_keybaord" in data:
-            self.one_time_keybaord = data["one_time_keybaord"]
-        else:
-            self.one_time_keybaord = False
-        if "selective" in data:
-            self.selective = data["selective"]
-        else:
-            self.selective = False
+        for row in data["keyboard"]:
+            self.keyboard.append(list(row))
+        self.reisze_keyboard = data.get("resize_keyboard", False)
+        self.one_time_keyboard = data.get("one_time_keyboard", False)
+        self.selective = data.get("selective", False)
 
 class ReplyKeyboardHide:
     def __init__(self, data):
         self.force_reply = data["force_reply"]
-        if "selective" in data:
-            self.selective = data["selective"]
-        else:
-            self.selective = False
+        self.selective = data.get("selective", False)
 
