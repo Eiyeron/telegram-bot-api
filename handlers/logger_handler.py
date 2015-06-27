@@ -26,6 +26,6 @@ class LoggerHandler:
     def on_sticker(self, tg, message):
         date = datetime.fromtimestamp(message.date)\
                 .strftime('%Y-%m-%d %H:%M:%S')
-        self.file.write("[{}]{} sent a sticker.\n"
-                        .format(date, message.from_user.username))
+        self.file.write("[{}]{} sent a sticker (id:{}).\n"
+                        .format(date, message.from_user.username, message.sticker.file_id))
         self.file.flush()

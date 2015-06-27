@@ -33,10 +33,23 @@ class Telegram:
         self.lastID = 0
         self.handlers = []
 
-    def send_request(self, action, params):
+    def send_request(self, action, params, files=[]):
         url = "{}{}/{}".format(self.api_url, self.access_token, action)
-        r = requests.get(url, params=params)
+        r = requests.get(url, params=params, files=files)
         return r.json()
+
+    def send_file(self, chat_id, command, method, file_data,
+                  reply_to_message_id="",
+                  reply_markup=""):
+        args = {"chat_id": chat_id,
+                "reply_to_message_id": reply_to_message_id,
+                "reply_markup": reply_markup}
+        files = []
+        if isinstance(file_data, str):
+            args[method] = file_data
+        else:
+            files[method] = file_data
+        return self.send_request(command, args, files)
 
     def get_updates(self, offset=0, limit=100, timeout=0):
         return self.send_request("getUpdates", {"offset": offset,
@@ -61,6 +74,36 @@ class Telegram:
                                   "from_chat_id": from_chat_id,
                                   "message_id": message_id})
 
+    def send_photo(self, chat_id, photo,
+                   reply_to_message_id="", reply_markup=""):
+        return self.send_file(chat_id, "sendPhoto", "photo", photo,
+                              reply_to_message_id, reply_markup)
+
+    def send_audio(self, chat_id, audio,
+                   reply_to_message_id="", reply_markup=""):
+        return self.send_file(chat_id, "sendAudio", "audio", audio,
+                              reply_to_message_id, reply_markup)
+
+    def send_document(self, chat_id, document,
+                      reply_to_message_id="", reply_markup=""):
+        return self.send_file(chat_id, "sendDocument", "document", document,
+                              reply_to_message_id, reply_markup)
+
+    def send_sticker(self, chat_id, sticker,
+                     reply_to_message_id="", reply_markup=""):
+        return self.send_file(chat_id, "sendSticker", "sticker", sticker,
+                              reply_to_message_id, reply_markup)
+
+    def send_video(self, chat_id, video,
+                   reply_to_message_id="", reply_markup=""):
+        return self.send_file(chat_id, "sendVideo", "video", video,
+                              reply_to_message_id, reply_markup)
+
+    def send_location(self, chat_id, latitude, longitude,
+                      reply_to_message_id="", reply_markup=""):
+        return self.send_request(chat_id, {"latitude": latitude,
+                                           "longitude": longitude})
+
     def add_handler(self, handler):
         if "callback" not in self.handlers:
             self.handlers.append(handler)
@@ -78,7 +121,7 @@ class Telegram:
                         getattr(handler, v)(self, message)
                     except:
                         print("""Oops, there has been a problem
-                        with this handler : {}""".format(handler))
+                              with this handler : {}""".format(handler))
                         print(sys.exc_info())
 
     def process_updates(self):
