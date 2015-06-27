@@ -1,4 +1,5 @@
 import requests
+import sys
 from .models import Message
 
 
@@ -48,9 +49,11 @@ class Telegram:
         params = {"chat_id": chat_id, "text": text}
         if reply_to_message is not None:
             params["reply_to_message"] = reply_to_message
-            if reply_markup is not None:
-                params["reply_markup"] = reply_markup
-                return self.send_request("sendMessage", params)
+
+        if reply_markup is not None:
+            params["reply_markup"] = reply_markup
+
+        return self.send_request("sendMessage", params)
 
     def forward_message(self, chat_id, from_chat_id, message_id):
         return self.send_request("forwardMessage",
@@ -76,7 +79,7 @@ class Telegram:
                     except:
                         print("""Oops, there has been a problem
                         with this handler : {}""".format(handler))
-                        print(sys.exc_info()[0])
+                        print(sys.exc_info())
 
     def process_updates(self):
         loopingUpdateHandler = True
