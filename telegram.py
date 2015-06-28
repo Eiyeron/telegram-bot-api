@@ -36,7 +36,14 @@ class Telegram:
     def send_request(self, action, params):
         url = "{}{}/{}".format(self.api_url, self.access_token, action)
         r = requests.get(url, params=params)
-        return r.json()
+        try:
+            return r.json()
+        except ValueError:
+            print("There has been a parsing error on this message : {}"
+                  .format(r.text()))
+            return {"ok": False,
+                    "why": "Parsing Error",
+                    "message": r.text()}
 
     def get_updates(self, offset=0, limit=100, timeout=0):
         return self.send_request("getUpdates", {"offset": offset,
