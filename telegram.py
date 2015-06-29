@@ -49,7 +49,7 @@ class Telegram:
         args = {"chat_id": chat_id,
                 "reply_to_message_id": reply_to_message_id,
                 "reply_markup": reply_markup}
-        files = []
+        files = {}
         if isinstance(file_data, str):
             args[method] = file_data
         else:
