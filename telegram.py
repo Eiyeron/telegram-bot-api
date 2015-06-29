@@ -36,7 +36,14 @@ class Telegram:
     def send_request(self, action, params, files=[]):
         url = "{}{}/{}".format(self.api_url, self.access_token, action)
         r = requests.get(url, params=params, files=files)
-        return r.json()
+        try:
+            return r.json()
+        except ValueError:
+            print("There has been a parsing error on this message : {}"
+                  .format(r.text()))
+            return {"ok": False,
+                    "why": "Parsing Error",
+                    "message": r.text()}
 
     def send_file(self, chat_id, command, method, file_data,
                   reply_to_message_id="",
