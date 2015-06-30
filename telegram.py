@@ -38,10 +38,10 @@ class Telegram:
             return r.json()
         except ValueError:
             print("There has been a parsing error on this message : {}"
-                  .format(r.text()))
+                  .format(r.text))
             return {"ok": False,
                     "why": "Parsing Error",
-                    "message": r.text()}
+                    "message": r.text}
 
     def send_file(self, chat_id, command, method, file_data,
                   reply_to_message_id="",
