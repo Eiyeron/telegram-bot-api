@@ -38,10 +38,10 @@ class Telegram:
             return r.json()
         except ValueError:
             print("There has been a parsing error on this message : {}"
-                  .format(r.text()))
+                  .format(r.text))
             return {"ok": False,
                     "why": "Parsing Error",
-                    "message": r.text()}
+                    "message": r.text}
 
     def get_updates(self, offset=0, limit=100, timeout=0):
         return self.send_request("getUpdates", {"offset": offset,
