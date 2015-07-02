@@ -9,5 +9,7 @@ class CommandDispatcher:
 
     def on_text(self, tg, message):
         for command, callback in self.commands.items():
-            if message.text.startswith(command):
+            # Match '/command' or '/command [anything]' and not '/commandFOO'
+            line = message.text
+            if line == command or line.startswith(command+" "):
                 callback(tg, message)
