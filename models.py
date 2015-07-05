@@ -1,15 +1,16 @@
-class User:
-    def __init__(self, data):
-        self.id = data["id"]
-        self.first_name = data["first_name"]
-        self.last_name = data.get("last_name", "")
-        self.username = data.get("username", "")
+class User(object):
+    def __init__(self, *args):
+        try:
+            self.__dict__ = args[0]
+        except:
+            pass
 
-
-class GroupChat:
-    def __init__(self, data):
-        self.id = data["id"]
-        self.title = data["title"]
+class GroupChat(object):
+    def __init__(self, *args):
+        try:
+            self.__dict__ = args[0]
+        except:
+            pass
 
 
 class Message:
