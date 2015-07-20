@@ -16,7 +16,7 @@ class LoggerHandler:
                 .strftime('%Y-%m-%d %H:%M:%S')
             self.file.write("[{}]{} : {}\n"
                             .format(date,
-                                    message.from_user.username,
+                                    message.from_user.first_name,
                                     message.text))
             self.file.flush()
 
@@ -27,5 +27,5 @@ class LoggerHandler:
         date = datetime.fromtimestamp(message.date)\
                 .strftime('%Y-%m-%d %H:%M:%S')
         self.file.write("[{}]{} sent a sticker.\n"
-                        .format(date, message.from_user.username))
+                        .format(date, message.from_user.first_name))
         self.file.flush()

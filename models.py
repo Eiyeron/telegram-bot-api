@@ -1,89 +1,18 @@
-class User:
-    def __init__(self, data):
-        self.id = data["id"]
-        self.first_name = data["first_name"]
-        self.last_name = data.get("last_name", "")
-        self.username = data.get("username", "")
+#Using __dict__ and *args for compulsory args and **kwargs for optional ones. 
 
+class User(object):
+    def __init__(self, *args):
+        try:
+            self.__dict__ = args[0]
+        except:
+            pass
 
-class GroupChat:
-    def __init__(self, data):
-        self.id = data["id"]
-        self.title = data["title"]
-
-
-class Message:
-    def __init__(self, data):
-        self.message_id = data["message_id"]
-        self.from_user = User(data["from"])
-        self.date = data["date"]
-
-        # Finding if we have a GroupChat or an User
-        if "title" in data["chat"]:
-            self.chat = GroupChat(data["chat"])
-        elif "first_name" in data["chat"]:
-            self.chat = User(data["chat"])
-
-        # Forward data
-        # Idea : as date is there if there is from,
-        # move date into from's condition?
-        if "forward_from" in data:
-            self.forward_from = User(data["forward_from"])
-
-        if "forward_date" in data:
-            self.forward_date = data["forward_date"]
-
-        # Message types
-        if "reply_to_message" in data:
-            self.reply_to_message = Message(data["reply_to_message"])
-
-        if "text" in data:
-            self.text = data["text"]
-
-        if "audio" in data:
-            self.audio = Audio(data["audio"])
-
-        if "document" in data:
-            self.document = Document(data["document"])
-
-        if "photo" in data:
-            self.photo = []
-            for photo in data["photo"]:
-                self.photo.append(PhotoSize(photo))
-
-        if "sticker" in data:
-            self.sticker = Sticker(data["sticker"])
-
-        if "video" in data:
-            self.video = Video(data["video"])
-
-        if "contact" in data:
-            self.contact = Contact(data["contact"])
-
-        if "location" in data:
-            self.location = Location(data["location"])
-
-        # What happened in the server
-        if "new_chat_participant" in data:
-            self.new_chat_participant = User(data["new_chat_participant"])
-
-        if "left_chat_participant" in data:
-            self.left_chat_participant = User(data["left_chat_participant"])
-
-        if "new_chat_title" in data:
-            self.new_chat_title = data["new_chat_title"]
-
-        if "new_chat_photo" in data:
-            self.new_chat_photo = []
-            for photo in data["new_chat_photo"]:
-                self.new_chat_photo.append(PhotoSize(photo))
-
-        if "delete_chat_photo" in data:
-            self.delete_chat_photo = data["delete_chat_photo"]
-
-        if "group_chat_created" in data:
-            self.group_chat_created = data["group_chat_created"]
-
+class GroupChat(object):
+    def __init__(self, *args):
+        try:
+            self.__dict__ = args[0]
+        except:
+            pass
 
 # Todo? : Inheritance and create a File superclass
 # for all file-related classes?
@@ -156,19 +85,68 @@ class UserProfilePhotos:
         for row in data["photos"]:
             self.photos.append(list(row))
 
+class ReplyKeyBoard(object):
+    def __init__(self, **kwargs):
+        self.selective = kwargs.get('selective', False)
+        
+class ReplyKeyboardMarkup(ReplyKeyBoard):
+    
+    def __init__(self, keyboard, **kwargs):
+        ReplyKeyBoard.__init__(self, **kwargs)        
+        self.keyboard = keyboard
+        self.reisze_keyboard = kwargs.get("resize_keyboard", False)
+        self.one_time_keyboard = kwargs.get("one_time_keyboard", False)
+        
+        
+class ReplyKeyboardHide(ReplyKeyBoard):
+    
+    def __init__(self, **kwargs):
+        ReplyKeyBoard.__init__(self, **kwargs)       
+        self.hide_keyboard = True
+        
+class ForceReply(ReplyKeyBoard):
+    
+    def __init__(self, **kwargs):
+        ReplyKeyBoard.__init__(self, **kwargs)        
+        self.force_reply = True
 
-# Todo? Keyboard superclass for inheritance
-class ReplyKeybaordMarkup:
-    def __init__(self, data):
-        self.keyboard = []
-        for row in data["keyboard"]:
-            self.keyboard.append(list(row))
-            self.reisze_keyboard = data.get("resize_keyboard", False)
-            self.one_time_keyboard = data.get("one_time_keyboard", False)
-            self.selective = data.get("selective", False)
+       
+replace_dict = {'forward_from': User,
+                   'audio': Audio,
+                   'document': Document,
+                   'sticker': Sticker,
+                   'video': Video,
+                   'contact': Contact,
+                   'location': Location,
+                   'new_chat_participant': User,
+                   'left_chat_participant': User
+                   }
+           
+class Message(object):
+    def __init__(self, *args):
+        message_dict = {}
+        
+        for attr, attr_value in args[0].iteritems():
 
+            if attr == 'from':
+                message_dict['from_user'] = User(attr_value)
+            elif attr == 'chat':
+                # Finding if we have a GroupChat or an User
+                if 'first_name' in attr_value:
+                    message_dict[attr] = User(attr_value)
+                elif 'title' in attr_value:
+                    message_dict[attr] = GroupChat(attr_value)                
+            elif attr in replace_dict:
+                message_dict[attr] = replace_dict[attr](attr_value)
+            elif attr == "reply_to_message":
+                message_dict[attr] = Message(attr_value)
+            elif attr in ("photo","new_chat_photo"):
+                photos = []                    
+                for photo in attr_value:
+                    photos.append(PhotoSize(photo))
+                message_dict[attr] = photos
+            else:
+                message_dict[attr] = attr_value
 
-class ReplyKeyboardHide:
-    def __init__(self, data):
-        self.force_reply = data["force_reply"]
-        self.selective = data.get("selective", False)
+        self.__dict__ = message_dict
+        

@@ -1,6 +1,6 @@
 import requests
 import sys
-from .models import Message
+from models import Message
 
 
 class Telegram:
@@ -29,6 +29,8 @@ class Telegram:
     def __init__(self, api_url, token):
         self.api_url = api_url
         self.access_token = token
+        self.loopingUpdateHandler = False
+        self.lastID = 0
         self.handlers = []
 
     def send_request(self, action, params):
@@ -86,3 +88,14 @@ class Telegram:
                         with this handler : {}""".format(handler))
                         print(sys.exc_info())
 
+    def process_updates(self):
+        self.loopingUpdateHandler = True
+        while self.loopingUpdateHandler:
+            notifications = self.get_updates(self.lastID)
+            if notifications["ok"] is True:
+                for notification in notifications['result']:
+                    self.lastID = max(self.lastID, notification["update_id"])+1
+                    message = Message(notification["message"])
+                    self.call_handlers(message)
+            else:
+                print("Oops, something went bad : {}".format(notifications))
