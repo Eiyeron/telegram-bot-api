@@ -1,6 +1,10 @@
 # telegram-bot-api
 Yet another event-based Python 3.X/Telegram-Bot-Api library. It's built and thought to be modular and plugin-based. Hook your own Handler and it'll receive updates according to the message type.
 
+## Prerequisites
+- Python 3
+- requests module.
+
 ## Todo
 - Auto-reloading plugins/handlers
 - Add more API functions
