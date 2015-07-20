@@ -106,8 +106,12 @@ class Telegram:
 
     def send_location(self, chat_id, latitude, longitude,
                       reply_to_message_id="", reply_markup=""):
-        return self.send_request(chat_id, {"latitude": latitude,
-                                           "longitude": longitude})
+        return self.send_request("sendLocation",{"chat_id": chat_id,
+                                  "latitude": latitude,
+                                  "longitude": longitude,
+                                  "reply_to_message_id": reply_to_message_id,
+                                  "reply_to_message_id": reply_markup
+                                  })
 
     def add_handler(self, handler):
         if "callback" not in self.handlers:
