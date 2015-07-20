@@ -68,6 +68,9 @@ class Telegram:
                                   "from_chat_id": from_chat_id,
                                   "message_id": message_id})
 
+    def get_me(self):
+        return self.send_request("getMe")
+
     def add_handler(self, handler):
         if "callback" not in self.handlers:
             self.handlers.append(handler)
