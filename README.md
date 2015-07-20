@@ -21,7 +21,7 @@ A `Telegram` object has to be created and given as argument your bot's token and
 Telegram's Bot API allow sending and resend documents on the same endpoints ("sendFOOBAR"), so the library functions act the same way.
 
 - Sending the already sent document's `file_id` will send a resend request, avoiding to upload again the document for everyone. This seems (not totally tested yet) to work on every document type (as stickers for instance).
-- Seding the document, like passing an `open("file", "r")` to the function will upload the file to the servers. Make sure that your file hasn't been already downloaded as the servers doesn't check if it already exists and you'll get a new `file_id` as reply.
+- Sending the document, like passing an `open("file", "rb")` (`rb` to avoid errors when trying to decode Unicode in binary files) to the function will upload the file to the servers. Make sure that your file hasn't been already downloaded as the servers doesn't check if it already exists and you'll get a new `file_id` as reply.
 
 ## Quick Example
 
