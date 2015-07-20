@@ -1,6 +1,6 @@
 import requests
 import sys
-from models import Message
+from .models import Message
 
 
 class Telegram:

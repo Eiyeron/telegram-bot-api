@@ -126,7 +126,7 @@ class Message(object):
     def __init__(self, *args):
         message_dict = {}
         
-        for attr, attr_value in args[0].iteritems():
+        for attr, attr_value in args[0].items():
 
             if attr == 'from':
                 message_dict['from_user'] = User(attr_value)
