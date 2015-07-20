@@ -33,7 +33,7 @@ class Telegram:
         self.lastID = 0
         self.handlers = []
 
-    def send_request(self, action, params):
+    def send_request(self, action, params={}):
         url = "{}{}/{}".format(self.api_url, self.access_token, action)
         r = requests.get(url, params=params)
         try:
