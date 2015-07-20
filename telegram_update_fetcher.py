@@ -7,7 +7,7 @@ class TelegramUpdateFetcher():
         self.tg = tg
         self.loopingUpdateHandler = False
         self.lastID = 0
-        
+
     def process_updates(self):
         self.loopingUpdateHandler = True
         while self.loopingUpdateHandler:
@@ -19,4 +19,3 @@ class TelegramUpdateFetcher():
                     self.tg.call_handlers(message)
             else:
                 print("Oops, something went bad : {}".format(notifications))
-        
