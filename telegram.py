@@ -73,12 +73,12 @@ class Telegram:
                                                 "timeout": timeout})
 
     def send_message(self, chat_id, text,
-                     reply_to_message=None,
+                     reply_to_message_id=None,
                      reply_markup=None):
         """Sends a text-only message to a chat/user."""
         params = {"chat_id": chat_id, "text": text}
-        if reply_to_message is not None:
-            params["reply_to_message"] = reply_to_message
+        if reply_to_message_id is not None:
+            params["reply_to_message_id"] = reply_to_message_id
 
         if reply_markup is not None:
             params["reply_markup"] = reply_markup
