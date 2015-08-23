@@ -25,7 +25,7 @@ Telegram's Bot API allow sending and resend documents on the same endpoints ("se
 
 ## Quick Example
 
-Note : the repo is stored in `app` folder.
+Note : In this example, the API library is stored in `app/` folder.
 
 ```python
 #!/usr/bin/python3
