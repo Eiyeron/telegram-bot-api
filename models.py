@@ -40,7 +40,8 @@ class Audio:
 class Document:
     def __init__(self, data):
         self.file_id = data["file_id"]
-        self.thumb = PhotoSize(data["thumb"])
+        if 'thumb' in data:
+            self.thumb = PhotoSize(data["thumb"])
         self.file_name = data.get("file_name", "")
         self.mime_type = data.get("mime_type", "")
         self.file_size = data.get("file_size", -1)
@@ -51,7 +52,8 @@ class Sticker:
         self.file_id = data["file_id"]
         self.width = data["width"]
         self.height = data["height"]
-        self.thumb = PhotoSize(data["thumb"])
+        if 'thumb' in data:
+            self.thumb = PhotoSize(data["thumb"])
         self.file_size = data.get("file_size", -1)
 
 
@@ -61,7 +63,8 @@ class Video:
         self.width = data["width"]
         self.height = data["height"]
         self.duration = data["duration"]
-        self.thumb = PhotoSize(data["thumb"])
+        if 'thumb' in data:
+            self.thumb = PhotoSize(data["thumb"])
         self.mime_type = data.get("mime_type", "")
         self.file_size = data.get("file_size", -1)
         self.caption = data.get("caption", "")
