@@ -1,6 +1,7 @@
 import requests
 import sys
 from .models import Message
+import json
 
 
 class Telegram:
@@ -64,6 +65,7 @@ class Telegram:
             args[method] = file_data
         else:
             files[method] = file_data
+
         return self.send_request(command, args, files)
 
     def get_updates(self, offset=0, limit=100, timeout=0):
@@ -84,6 +86,20 @@ class Telegram:
             params["reply_markup"] = reply_markup
 
         return self.send_request("sendMessage", params)
+
+    def send_keyboard_markup(self, chat_id, keyboard, message,
+                             resize_keyboard=False,
+                             one_time_keyboard=False,
+                             selective=False):
+        reply_markup = {
+            "keyboard": keyboard,
+            "resize_keyboard": resize_keyboard,
+            "one_time_keyboard": one_time_keyboard,
+            "selective": selective}
+
+        return self.send_message(chat_id, message, None,
+                                 json.dumps(reply_markup,
+                                            separators=(',', ':')))
 
     def forward_message(self, chat_id, from_chat_id, message_id):
         """Forwards a message from a chat to another chat."""
@@ -144,8 +160,7 @@ class Telegram:
                                   "latitude": latitude,
                                   "longitude": longitude,
                                   "reply_to_message_id": reply_to_message_id,
-                                  "reply_to_message_id": reply_markup
-                                  })
+                                  "reply_to_message_id": reply_markup})
 
     def add_handler(self, handler):
         """Adds a update handler to the current instance."""
