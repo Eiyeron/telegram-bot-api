@@ -1,3 +1,5 @@
+# Deprecated
+This library is now outdated, I don't plan on updating it anymore and there must be better libraries to manage Telegram bots in Python.
 # telegram-bot-api
 Yet another event-based Python 3.X/Telegram-Bot-Api library. It's built and thought to be modular and plugin-based. Hook your own Handler and it'll receive updates according to the message type.
 
